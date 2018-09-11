@@ -60,6 +60,11 @@ describe('POST /todos',() => {
 
 describe('GET /todos',() => {
     it('Should get all todos',() => {
-        
+        request(app)
+        .get('/todos')
+        .expect(200)
+        .expect((res) => {
+            expect(res.body.todos.length).toBe(testTodos.length);
+        }).end(done);
     });
 });
