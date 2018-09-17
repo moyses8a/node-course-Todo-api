@@ -1,15 +1,17 @@
 require('./config/config')
-var express = require('express');
-var {ObjectID} = require('mongodb');
-var bodyParser = require('body-parser');
-const port = process.env.PORT;
+
 const _ = require('lodash');
+var express = require('express');
+var bodyParser = require('body-parser');
+var {ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate')
 
 var app = express();
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
@@ -49,11 +51,11 @@ app.get('/todos/:id',(req,res) => {
 app.delete('/todos/:id',(req,res) => {
     var id = req.params.id
     if (!ObjectID.isValid(id)) {
-        res.status(404).send();
+        return res.status(404).send();
     }
     Todo.findByIdAndRemove(id).then((todo) => {
         if (!todo) {
-            res.status(404).send();
+            return res.status(404).send();
         }
         res.send({todo});
     }).catch((e) => res.status(400).send());
@@ -82,16 +84,19 @@ app.patch('/todos/:id',(req,res) => {
 });
 
 app.post('/users', (req,res) => {
+    console.log(req.body.email)
     var user = new User(_.pick(req.body,['email','password']));
 
-    user.save().then((doc) => {
+    user.save().then(() => {
         // res.send(doc);
         return user.generateAuthToken();
-    }, (e) => {
-        res.status(400).send(e);
     }).then((token) => {
         res.header('x-auth',token).send(user);
-    }).catch((e) => console.log(e));
+    }).catch((e) => res.status(400).send(e));
+});
+
+app.get('/users/me', authenticate,(req,res) => {
+    res.send(req.user);
 });
 
 
@@ -100,3 +105,5 @@ app.listen(port,() => {
 });
 
 module.exports = {app};
+// req es para obtener informacion de la solicitud
+// res es para enviar resultado
