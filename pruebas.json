@@ -1,0 +1,24 @@
+{
+    "header": {
+        "connection": "close",
+        "content-length": "124",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Fri, 21 Sep 2018 03:50:46 GMT",
+        "etag": "W/\"7c-+8ZWepvjc3oF6levbb5C4VIlUKk\"",
+        "x-powered-by": "Express"
+    },
+    "req": {
+        "data": {
+            "completed": true,
+            "text": "This should be the new text"
+        },
+        "headers": {
+            "content-type": "application/json",
+            "user-agent": "node-superagent/3.8.3"
+        },
+        "method": "PATCH",
+        "url": "http://127.0.0.1:63010/todos/5ba46a9554b2a55cde834daa"
+    },
+    "status": 200,
+    "text": "{\"completed\":true,\"completedAt\":1537501846961,\"_id\":\"5ba46a9554b2a55cde834daa\",\"text\":\"This should be the new text\",\"__v\":0}"
+}
